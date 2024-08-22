@@ -5,7 +5,7 @@ export interface CustomerMessage {
   message: string;
   created: string;
   replied: boolean;
-  _id:string;
+  _id: string;
 }
 
 export interface ReplyResponse {
@@ -17,20 +17,33 @@ export interface GetCustomerMessagesResponse extends Array<CustomerMessage> {}
 
 const customerSupportService = {
   // Send a customer message
-  postCustomerMessage: async (email: string, message: string): Promise<ReplyResponse> => {
+  postCustomerMessage: async (
+    email: string,
+    message: string,
+  ): Promise<ReplyResponse> => {
     try {
-        const response = await axiosInstance.post('/messages', { email, message });
-        return response.data
+      const response = await axiosInstance.post("/messages", {
+        email,
+        message,
+      });
+      return response.data;
     } catch (error) {
       throw error; // Pass the error to the caller
     }
   },
 
   // Admin replies to a customer message
-  replyToCustomerMessage: async (messageId: string, replyMessage: string,token:string): Promise<ReplyResponse> => {
+  replyToCustomerMessage: async (
+    messageId: string,
+    replyMessage: string,
+    token: string,
+  ): Promise<ReplyResponse> => {
     try {
-      const response = await axiosInstance.post(`/messages/reply/${messageId}`, { replyMessage },
-        { headers: {Authorization: `Bearer ${token}`}});
+      const response = await axiosInstance.post(
+        `/messages/reply/${messageId}`,
+        { replyMessage },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
       return response.data;
     } catch (error) {
       throw error; // Pass the error to the caller
@@ -51,7 +64,7 @@ const customerSupportService = {
     } catch (error) {
       throw error; // Pass the error to the caller
     }
-  }
+  },
 };
 
 export default customerSupportService;

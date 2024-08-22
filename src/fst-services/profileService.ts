@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from "./axiosInstance";
 
 interface ProfileResponse {
   message: string;
@@ -19,16 +19,19 @@ interface ProfileData {
 
 const profileService = {
   // Create a new profile
-  createProfile: async (profileData: ProfileData, token: string): Promise<ProfileResponse> => {
+  createProfile: async (
+    profileData: ProfileData,
+    token: string,
+  ): Promise<ProfileResponse> => {
     try {
       const response = await axiosInstance.post<ProfileResponse>(
-        '/profile',
+        "/profile",
         profileData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error: any) {
@@ -37,7 +40,10 @@ const profileService = {
   },
 
   // Get a profile by user ID
-  getProfile: async (userId: string, token: string): Promise<ProfileResponse> => {
+  getProfile: async (
+    userId: string,
+    token: string,
+  ): Promise<ProfileResponse> => {
     try {
       const response = await axiosInstance.get<ProfileResponse>(
         `/profile/${userId}`,
@@ -45,7 +51,7 @@ const profileService = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error: any) {
@@ -54,7 +60,11 @@ const profileService = {
   },
 
   // Update a profile
-  updateProfile: async (userId: string, profileData: ProfileData, token: string): Promise<ProfileResponse> => {
+  updateProfile: async (
+    userId: string,
+    profileData: ProfileData,
+    token: string,
+  ): Promise<ProfileResponse> => {
     try {
       const response = await axiosInstance.put<ProfileResponse>(
         `/profile/${userId}`,
@@ -63,7 +73,7 @@ const profileService = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error: any) {
@@ -72,17 +82,20 @@ const profileService = {
   },
 
   // Upload profile image and update profile
-  uploadProfileImage: async (files: File[] | File, token: string, userId:string): Promise<ProfileResponse> => {
+  uploadProfileImage: async (
+    files: File[] | File,
+    token: string,
+    userId: string,
+  ): Promise<ProfileResponse> => {
     const formData = new FormData();
-    if(Array.isArray(files)){
+    if (Array.isArray(files)) {
       for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
+        formData.append("files", files[i]);
       }
+    } else {
+      formData.append("files", files);
     }
-    else {
-      formData.append('files', files)
-    }
-    console.log(formData,files)
+    console.log(formData, files);
     try {
       const response = await axiosInstance.post<ProfileResponse>(
         `/profile/${userId}/upload-image`,
@@ -90,16 +103,19 @@ const profileService = {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
       return response.data;
     } catch (error: any) {
       throw error.response.data;
     }
   },
-  deleteProfile: async (userId: string, token: string): Promise<ProfileResponse> => {
+  deleteProfile: async (
+    userId: string,
+    token: string,
+  ): Promise<ProfileResponse> => {
     try {
       const response = await axiosInstance.delete<ProfileResponse>(
         `/profile/${userId}`,
@@ -107,7 +123,7 @@ const profileService = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error: any) {
@@ -116,19 +132,19 @@ const profileService = {
   },
 
   // Get all profiles with pagination
-  getProfiles: async (page: number, token: string): Promise<ProfileResponse> => {
+  getProfiles: async (
+    page: number,
+    token: string,
+  ): Promise<ProfileResponse> => {
     try {
-      const response = await axiosInstance.get<ProfileResponse>(
-        `/profile`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            page,
-          },
-        }
-      );
+      const response = await axiosInstance.get<ProfileResponse>(`/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          page,
+        },
+      });
       return response.data;
     } catch (error: any) {
       throw error.response.data;
@@ -136,7 +152,10 @@ const profileService = {
   },
 
   // Search profiles based on query parameters
-  searchProfiles: async (query: Record<string, any>, token: string): Promise<ProfileResponse> => {
+  searchProfiles: async (
+    query: Record<string, any>,
+    token: string,
+  ): Promise<ProfileResponse> => {
     try {
       const response = await axiosInstance.get<ProfileResponse>(
         `/profile/search`,
@@ -145,7 +164,7 @@ const profileService = {
             Authorization: `Bearer ${token}`,
           },
           params: query,
-        }
+        },
       );
       return response.data;
     } catch (error: any) {

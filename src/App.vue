@@ -1,11 +1,11 @@
 <script lang="ts">
 export default {
-  data () {
+  data() {
     return {
-      message: 'blah'
-    }
-  }
-}
+      message: "blah",
+    };
+  },
+};
 </script>
 
 <template>
@@ -14,7 +14,4 @@ export default {
   </div>
 </template>
 
-
-<style >
-
-</style>
+<style></style>

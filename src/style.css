@@ -1,17 +1,21 @@
 .gradient-text-main {
   font-size: 2em; /* Adjust font size as needed */
   font-weight: bold; /* Optional: makes the text bold */
-  background: linear-gradient(-116deg, #9509c1, #000477); /* Gradient colors and direction */
+  background: linear-gradient(
+    -116deg,
+    #9509c1,
+    #000477
+  ); /* Gradient colors and direction */
   -webkit-background-clip: text; /* Clip background to the text */
   -webkit-text-fill-color: transparent; /* Make text color transparent to show gradient */
 }
 
-.no-space{
+.no-space {
   padding: 0px;
   margin: 0px;
 }
 
-.scroll-y{
+.scroll-y {
   overflow-y: scroll;
 }
 

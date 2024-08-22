@@ -176,6 +176,33 @@
                 </div>
                 <Button @click="testIsValid" buttonVal="Check Token Validity" />
                 </div>
+                <div class="border my-2 p-2" id="authReq09">
+                  <p><strong>Endpoint: /auth/reauthenticate</strong></p>
+                  <p><strong>Method:</strong> POST</p>
+                  <p><strong>Description:</strong> Re-authenticates the user by validating the provided token and generating a new JWT token if valid. The request must include the old token in the body.</p>
+                  <p><strong>Request Body:</strong> 
+                      <pre>
+                      {
+                          "token": "string"  // The existing JWT token to be re-authenticated
+                      }
+                      </pre>
+                  </p>
+                  <p><strong>Responses:</strong></p>
+                  <ul>
+                      <li>200: Returns a new JWT token and its expiration time</li>
+                      <li>401: Token is missing from the request</li>
+                      <li>403: Token is invalid or expired</li>
+                      <li>404: User associated with the token not found</li>
+                      <li>500: Internal Server Error</li>
+                  </ul>
+                  
+                  <div class="loginform border r-1 p-2">
+                      <p>Input Form</p>
+                      <Input v-model="reAuthToken" placeholder="Add Existing Token" />
+                      <p></p>
+                  </div>
+                  <Button @click="reAuthenticateToken" buttonVal="Re-authenticate Token" />
+              </div>
             </div>
             </div>
             <div class="col-6 p-2 position-relative">
@@ -221,7 +248,8 @@
       deleteEmail: '',
       disableToken: '',
       deleteToken: '',
-      validCheckToken: ''
+      validCheckToken: '',
+      reAuthToken: ''
     };
   },
     methods: {
@@ -290,6 +318,14 @@
     async testIsValid() {
       try {
         const result = await authService.isValid(this.validCheckToken);
+        this.response = JSON.stringify(result, null, 2);
+      } catch (error: any) {
+        this.response = `Error: ${error.message}`;
+      }
+    },
+    async reAuthenticateToken (){
+      try {
+        const result = await authService.reAuthenticate(this.reAuthToken);
         this.response = JSON.stringify(result, null, 2);
       } catch (error: any) {
         this.response = `Error: ${error.message}`;
