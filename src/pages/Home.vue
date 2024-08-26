@@ -358,6 +358,17 @@ export default defineComponent({
                     not found (404), and server issues (500).
                   </p>
                 </li>
+                <li>
+                <strong>/delivery-orders/calculate-delivery-cost</strong>
+                <p>
+                  POST: Calculate the delivery cost based on the pickup and dropoff areas,
+                  as well as the delivery type (e.g., regular, express, bulk). Requires
+                  <code>pickupArea</code>, <code>dropoffArea</code>, and <code>type</code>
+                  (which can be <code>bulk</code>, <code>regular</code>, or
+                  <code>express</code>) in the request body. Returns the calculated cost or 
+                  an error for invalid input (400) or server issues (500).
+                </p>
+</li>
               </ul>
               <Button
                 @click="goToDeliveryOrderApi"

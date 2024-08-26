@@ -10,7 +10,7 @@
           <p><strong>Description:</strong> Create a new delivery order</p>
           <p><strong>Request Body:</strong></p>
           <pre>
-{ "packageDescription": "Description", "senderName": "Sender", "senderPhoneNo": "1234567890", "receiverName": "Receiver", "receiverPhoneNo": "0987654321", "pickupAddress": "Pickup Address", "dropoffAddress": "Dropoff Address", "pickupLga": "Pickup LGA", "dropoffLga": "Dropoff LGA", "paymentMethod": "online", "totalDistance": 10, "perishables": false, "fragile": false, "pickupIsResidential": true, "dropoffIsResidential": true }</pre
+{ "packageDescription": "Description", "senderName": "Sender", "senderPhoneNo": "1234567890", "receiverName": "Receiver", "receiverPhoneNo": "0987654321", "pickupAddress": "Pickup Address", "dropoffAddress": "Dropoff Address", "pickupArea": "Pickup Area", "dropoffArea": "Dropoff Area", "paymentMethod": "online", "totalDistance": 10, "perishables": false, "fragile": false, "pickupIsResidential": true, "dropoffIsResidential": true }</pre
           >
           <p><strong>Responses:</strong></p>
           <ul>
@@ -82,13 +82,13 @@
             />
             <p></p>
             <Input
-              v-model="createOrderData.pickupLga"
-              placeholder="Enter Pickup LGA"
+              v-model="createOrderData.pickupArea"
+              placeholder="Enter Pickup Area"
             />
             <p></p>
             <Input
-              v-model="createOrderData.dropoffLga"
-              placeholder="Enter Dropoff LGA"
+              v-model="createOrderData.dropoffArea"
+              placeholder="Enter Dropoff Area"
             />
             <p></p>
             <Select
@@ -189,13 +189,13 @@
             />
             <p></p>
             <Input
-              v-model="updateOrderData.pickupLga"
-              placeholder="Enter Pickup LGA"
+              v-model="updateOrderData.pickupArea"
+              placeholder="Enter Pickup Area"
             />
             <p></p>
             <Input
-              v-model="updateOrderData.dropoffLga"
-              placeholder="Enter Dropoff LGA"
+              v-model="updateOrderData.dropoffArea"
+              placeholder="Enter Dropoff Area"
             />
             <p></p>
             <Select
@@ -263,6 +263,40 @@
             buttonVal="Test Get Delivery Order by ID"
           />
         </div>
+
+        <!-- Calculate Delivery Cost -->
+<div class="border my-2 p-2" id="deliveryOrderReqCalculateCost">
+  <p><strong>Endpoint: /delivery-orders/calculate-delivery-cost</strong></p>
+  <p><strong>Method:</strong> POST</p>
+  <p><strong>Description:</strong> Calculate the delivery cost based on the provided pickup and dropoff areas, along with delivery type.</p>
+  <p><strong>Request Body:</strong></p>
+  <ul>
+    <li>pickupArea (required): The area where the package will be picked up</li>
+    <li>dropoffArea (required): The area where the package will be delivered</li>
+    <li>type (optional): Type of delivery (e.g., 'regular', 'express', 'bulk')</li>
+  </ul>
+  <p><strong>Responses:</strong></p>
+  <ul>
+    <li>200: Delivery cost calculated successfully</li>
+    <li>400: Invalid input data</li>
+    <li>500: Server error</li>
+  </ul>
+  <div class="loginform border r-1 p-2">
+    <p>Input Form</p>
+    <Input v-model="pickupArea" placeholder="Enter Pickup Area" />
+    <p></p>
+    <Input v-model="dropoffArea" placeholder="Enter Dropoff Area" />
+    <p></p>
+    <Input v-model="deliveryType" placeholder="Enter Delivery Type (optional)" />
+    <p></p>
+    <Input v-model="getOrderToken" placeholder="Enter Token" />
+  </div>
+  <Button
+    @click="testCalculateDeliveryCost"
+    buttonVal="Test Calculate Delivery Cost"
+  />
+</div>
+
       </div>
 
       <div class="col-6 p-2 position-relative">
@@ -298,8 +332,8 @@ export default defineComponent({
         receiverPhoneNo: "",
         pickupAddress: "",
         dropoffAddress: "",
-        pickupLga: "",
-        dropoffLga: "",
+        pickupArea: "",
+        dropoffArea: "",
         paymentMethod: "online" as "online" | "onpickup" | "ondelivery", // Explicitly typed
         totalDistance: 0,
         deliveryId: "efwafewfwf",
@@ -319,9 +353,9 @@ export default defineComponent({
         receiverPhoneNo: "",
         pickupAddress: "",
         dropoffAddress: "",
-        pickupLga: "",
+        pickupArea: "",
         price: 1000,
-        dropoffLga: "",
+        dropoffArea: "",
         deliveryId: "329092000",
         paymentMethod: "online" as "online" | "onpickup" | "ondelivery", // Explicitly typed
         totalDistance: 0,
@@ -340,9 +374,27 @@ export default defineComponent({
         { label: "On Delivery", value: "ondelivery" },
         { label: "On Pickup", value: "onpickup" },
       ],
+      pickupArea: '',
+      dropoffArea: '',
+      deliveryType: '',
     };
   },
-  methods: {
+  methods: {    
+    async testCalculateDeliveryCost() {
+      try {
+        const deliveryCostRequest = {
+          pickupArea: this.pickupArea,
+          dropoffArea: this.dropoffArea,
+          type: this.deliveryType,
+        };
+        const response = await deliveryOrderService.calculateDeliveryCost(
+          deliveryCostRequest
+        );
+        this.responseData = JSON.stringify(response, null, 2);
+      } catch (error) {
+        this.responseData = `Error: ${error}`;
+      }
+    },
     async testCreateDeliveryOrder() {
       try {
         const response = await deliveryOrderService.createDeliveryOrder(
