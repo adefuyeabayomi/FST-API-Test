@@ -369,6 +369,16 @@ export default defineComponent({
                   an error for invalid input (400) or server issues (500).
                 </p>
 </li>
+<li>
+  <strong>/delivery-orders/confirm-payment</strong>
+  <p>
+    POST: Confirm the payment for a specific delivery order. Requires 
+    <code>orderId</code>, <code>paymentRef</code>, and <code>tranxRef</code> 
+    in the request body. Returns success on confirmation or error for 
+    invalid input (400) and server issues (500).
+  </p>
+</li>
+
               </ul>
               <Button
                 @click="goToDeliveryOrderApi"

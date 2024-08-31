@@ -13,6 +13,17 @@ interface UpdateUserDetails {
   recoveryEmail?: string;
 }
 
+export interface User {
+  email: string;
+  disabled?: boolean;
+  recoveryEmail?:string;
+  deleted?: boolean;
+  created?: Date;
+  verified?: boolean;
+  role?: "user" | "admin" | "rider";
+}
+
+
 const authService = {
   // Signup with email and password
   signupWithEmailAndPassword: async (
@@ -56,6 +67,38 @@ const authService = {
         role,
       });
       return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  },
+  getAccounts: async (
+    page: number = 1,
+    limit: number = 30,
+    disabled?: boolean,
+    deleted?: boolean,
+    role?: string
+  ): Promise<User[]> => {
+    try {
+      const response = await axiosInstance.get("/auth/get-accounts", {
+        params: {
+          page,
+          limit,
+          disabled,
+          deleted,
+          role,
+        },
+      });
+      return response.data as User[]
+    } catch (error: any) {
+      throw error;
+    }
+  },
+
+  // Get an account by ID
+  getAccountById: async (id: string): Promise<User> => {
+    try {
+      const response = await axiosInstance.get(`/auth/get-accounts/${id}`);
+      return response.data as User
     } catch (error: any) {
       throw error;
     }

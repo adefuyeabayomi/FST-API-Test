@@ -43,7 +43,7 @@ export interface DeliveryOrder {
 
 // Service functions
 
-const createDeliveryOrder = async (deliveryOrder: DeliveryOrder, token: string) => {
+const createDeliveryOrder = async (deliveryOrder: DeliveryOrder, token: string): Promise<any> => {
   console.log(deliveryOrder)
   try {
     const response = await axiosInstance.post('/delivery-orders', deliveryOrder,{
@@ -70,13 +70,13 @@ const updateDeliveryOrder = async (orderId: string, updates: Partial<DeliveryOrd
   }
 };
 
-const getDeliveryOrders = async (page: number) => {
+const getDeliveryOrders = async (page: number, status: string, user: string) => {
   try {
     const response = await axiosInstance.get('/delivery-orders', {
-      params: { page, limit: 30 },
+      params: { page, limit: 30, status, user },
     });
     return response.data;
-  } catch (error:any) {
+  } catch (error: any) {
     throw new Error(`Error retrieving delivery orders: ${error.message}`);
   }
 };
@@ -89,6 +89,7 @@ const getDeliveryOrderById = async (orderId: string) => {
     throw new Error(`Error retrieving delivery order by ID: ${error.message}`);
   }
 };
+
 const calculateDeliveryCost = async (deliveryDetails: { pickupArea: string; dropoffArea: string; type: string }) => {
   console.log(deliveryDetails);
   try {
@@ -99,10 +100,28 @@ const calculateDeliveryCost = async (deliveryDetails: { pickupArea: string; drop
   }
 };
 
+const confirmPayment = async (orderId: string, paymentRef: string, transactionReference: string) => {
+  try {
+    const response = await axiosInstance.post(
+      '/delivery-orders/confirm-payment',
+      {
+        id: orderId,
+        paymentRef,
+        transactionReference,
+      },
+      {}
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(`Error confirming payment: ${error.message}`);
+  }
+};
+
 export default {
   createDeliveryOrder,
   updateDeliveryOrder,
   getDeliveryOrders,
   getDeliveryOrderById,
-  calculateDeliveryCost
+  calculateDeliveryCost,
+  confirmPayment, // Export the confirmPayment function
 };

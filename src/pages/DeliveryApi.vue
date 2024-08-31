@@ -296,6 +296,36 @@
     buttonVal="Test Calculate Delivery Cost"
   />
 </div>
+<!-- Confirm Payment -->
+<div class="border my-2 p-2" id="deliveryOrderReqConfirmPayment">
+  <p><strong>Endpoint: /delivery-orders/confirm-payment</strong></p>
+  <p><strong>Method:</strong> POST</p>
+  <p><strong>Description:</strong> Confirm the payment for a specific delivery order using order ID, payment reference, and transaction reference.</p>
+  <p><strong>Request Body:</strong></p>
+  <ul>
+    <li>orderId (required): The ID of the delivery order</li>
+    <li>paymentRef (required): The payment reference from the payment provider</li>
+    <li>tranxRef (required): The transaction reference for the payment</li>
+  </ul>
+  <p><strong>Responses:</strong></p>
+  <ul>
+    <li>200: Payment confirmed successfully</li>
+    <li>400: Invalid input data</li>
+    <li>500: Server error</li>
+  </ul>
+  <div class="loginform border r-1 p-2">
+    <p>Input Form</p>
+    <Input v-model="confirmPaymentForm.orderId" placeholder="Enter Order ID" />
+    <p></p>
+    <Input v-model="confirmPaymentForm.paymentRef" placeholder="Enter Payment Reference" />
+    <p></p>
+    <Input v-model="confirmPaymentForm.tranxRef" placeholder="Enter Transaction Reference" />
+  </div>
+  <Button
+    @click="testConfirmPayment"
+    buttonVal="Test Confirm Payment"
+  />
+</div>
 
       </div>
 
@@ -377,6 +407,13 @@ export default defineComponent({
       pickupArea: '',
       dropoffArea: '',
       deliveryType: '',
+      confirmPaymentForm: {
+        orderId: '',
+        paymentRef: '',
+        tranxRef:''
+      },
+      deliveryStatus: '',
+      user: ''
     };
   },
   methods: {    
@@ -421,7 +458,7 @@ export default defineComponent({
     async testGetDeliveryOrders() {
       try {
         const response = await deliveryOrderService.getDeliveryOrders(
-          this.ordersPage,
+          this.ordersPage, this.deliveryStatus, this.user
         );
         this.responseData = JSON.stringify(response, null, 2);
       } catch (error: any) {
@@ -432,6 +469,16 @@ export default defineComponent({
       try {
         const response = await deliveryOrderService.getDeliveryOrderById(
           this.getOrderId,
+        );
+        this.responseData = JSON.stringify(response, null, 2);
+      } catch (error: any) {
+        this.responseData = `Error: ${error.message}`;
+      }
+    },
+    async testConfirmPayment() {
+      try {
+        const response = await deliveryOrderService.confirmPayment(
+          this.confirmPaymentForm.orderId, this.confirmPaymentForm.paymentRef, this.confirmPaymentForm.tranxRef
         );
         this.responseData = JSON.stringify(response, null, 2);
       } catch (error: any) {
